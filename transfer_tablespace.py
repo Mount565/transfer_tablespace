@@ -179,6 +179,9 @@ target_cur.execute("ALTER TABLE {} DISCARD TABLESPACE;".format(table))
 # transfer tablespaces to all the target servers
 for target_host in target_hosts:
     os.system("scp {}.{ibd,cfg} {}@{}:{}".format(source_dir + "/" + table, target_ssh_user, target_host, target_dir))
+      # change ownership to mysql
+    os.system("ssh {}@{} '{}{}.{ibd,cfg}'".format(target_ssh_user, target_host, "sudo chown mysql.mysql ",
+                                                  source_dir + "/" + table))
 
 # unlock tables on source server
 source_cur.execute("unlock tables")
